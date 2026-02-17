@@ -24,7 +24,7 @@ function useWindowSize() {
 
     window.addEventListener('resize', handleResize);
     handleResize(); // Initial sizing
-    
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -126,22 +126,22 @@ export default function HomePage() {
   const [showDebugButton, setShowDebugButton] = useState<boolean>(false);
   const [hasVisitedLiWei, setHasVisitedLiWei] = useState<boolean>(false);
   const [hasVisitedRitual, setHasVisitedRitual] = useState<boolean>(false);
-  
+
   // Get window size for responsive layouts
   const { width } = useWindowSize();
   const isMobile = width <= 600;
-  
+
   // Referência para a div do vídeo
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  
+
   // Configuração de debug - mostrar botão de reset se clicar 5 vezes no footer
   const clickCountRef = useRef(0);
-  
+
   // Efeito para configuração inicial
   useEffect(() => {
     setMounted(true);
     setLocale(getCurrentLocale());
-    
+
     const handleFooterClick = () => {
       clickCountRef.current++;
       if (clickCountRef.current >= 5) {
@@ -149,19 +149,19 @@ export default function HomePage() {
         clickCountRef.current = 0;
       }
     };
-    
+
     const footer = document.querySelector('footer');
     if (footer) {
       footer.addEventListener('click', handleFooterClick);
     }
-    
+
     // Recuperar o estado do vídeo do localStorage
     try {
       const savedVideoState = localStorage.getItem(VIDEO_STATE_KEY);
       if (savedVideoState === 'true') {
         setShowVideo(true);
       }
-      
+
       // Verificar se o usuário já visitou os mantras do Li Wei
       const liweiVisited = localStorage.getItem(LIWEI_VISITED_KEY);
       if (liweiVisited === 'true') {
@@ -176,7 +176,7 @@ export default function HomePage() {
     } catch (error) {
       console.error('Erro ao acessar localStorage:', error);
     }
-    
+
     // Cleanup
     return () => {
       if (footer) {
@@ -184,36 +184,31 @@ export default function HomePage() {
       }
     };
   }, []);
-  
+
   // Efeito para controlar o script do vídeo
   useEffect(() => {
     if (!showVideo || !videoContainerRef.current) return;
-    
+
     // Limpar qualquer script existente
     const existingScripts = document.querySelectorAll('script[id^="scr_"]');
     existingScripts.forEach(script => script.remove());
-    
-    // Definir o ID do vídeo com base no idioma
-    const videoId = locale === 'pt' ? '6734ea56e0f4c0000b8e807e' : 
-                    locale === 'es' ? '68193ae1d508bf236b3df1a1' : 
-                    locale === 'fr' ? '687ecfe4ecd5358e3bf32b21' : // French video ID
-                    '6861ab32032c2fa15600484e'; // English video ID
-    
+
+    // Definir o ID do vídeo e Account ID
+    const videoId = '69948a28736d0847a673ac56';
+    const accountId = 'c90f7aac-d958-45ea-9216-c109249853cc';
+
     // Configurar o HTML do vídeo
     videoContainerRef.current.innerHTML = `
-      <div id="vid_${videoId}" style="position: relative; width: 100%; padding: 56.25% 0 0;">
-        <img id="thumb_${videoId}" src="https://images.converteai.net/28d41dbd-cd23-4eac-a930-66e1aca584eb/players/${videoId}/thumbnail.jpg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block;" alt="thumbnail">
-        <div id="backdrop_${videoId}" style="-webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); position: absolute; top: 0; height: 100%; width: 100%;"></div>
-      </div>
+      <vturb-smartplayer id="vid-${videoId}" style="display: block; margin: 0 auto; width: 100%; max-width: 400px;"></vturb-smartplayer>
     `;
-    
+
     // Adicionar o script
     const script = document.createElement('script');
     script.id = `scr_${videoId}`;
     script.type = 'text/javascript';
-    script.innerHTML = `var s=document.createElement("script"); s.src="https://scripts.converteai.net/28d41dbd-cd23-4eac-a930-66e1aca584eb/players/${videoId}/player.js", s.async=!0,document.head.appendChild(s);`;
+    script.innerHTML = `var s=document.createElement("script"); s.src="https://scripts.converteai.net/${accountId}/players/${videoId}/v4/player.js", s.async=!0,document.head.appendChild(s);`;
     document.body.appendChild(script);
-    
+
     return () => {
       // Remover script ao desmontar
       const scriptToRemove = document.getElementById(`scr_${videoId}`);
@@ -222,7 +217,7 @@ export default function HomePage() {
       }
     };
   }, [showVideo, locale]);
-  
+
   // Manipulador para iniciar a leitura
   const handleStartReading = () => {
     try {
@@ -230,7 +225,7 @@ export default function HomePage() {
     } catch (error) {
       console.error('Erro ao salvar no localStorage:', error);
     }
-    
+
     setShowVideo(true);
   };
 
@@ -241,13 +236,13 @@ export default function HomePage() {
     } catch (error) {
       console.error('Erro ao remover do localStorage:', error);
     }
-    
+
     setShowVideo(false);
     window.location.reload();
   };
-  
+
   if (!mounted) return null;
-  
+
   const translations = {
     pt: {
       title: "Bem-vindo ao Tarô dos Anjos",
@@ -286,15 +281,15 @@ export default function HomePage() {
       additionalContentDescription: "Accédez à nos pratiques spirituelles spéciales"
     }
   };
-  
+
   const t = translations[locale];
-  
+
   return (
     <main style={styles.container}>
       <NavbarWithSuspense />
-      
+
       <div style={styles.contentContainer}>
-        <motion.h1 
+        <motion.h1
           style={styles.heading}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -302,27 +297,27 @@ export default function HomePage() {
         >
           {t.title}
         </motion.h1>
-        
+
         <motion.div
           style={{ width: '100%', maxWidth: '64rem', touchAction: 'manipulation' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          {!showVideo && (            <motion.button              style={styles.button}              whileHover={{                 scale: 1.05,                 background: 'linear-gradient(to right, #D4AF37, #FFD700)'              }}              whileTap={{ scale: 0.95 }}              onClick={handleStartReading}            >              {t.startReading}            </motion.button>          )}
-          
+          {!showVideo && (<motion.button style={styles.button} whileHover={{ scale: 1.05, background: 'linear-gradient(to right, #D4AF37, #FFD700)' }} whileTap={{ scale: 0.95 }} onClick={handleStartReading}            >              {t.startReading}            </motion.button>)}
+
           {/* Vídeo renderizado diretamente na página principal */}
           {showVideo && (
             <div style={styles.videoContainer} ref={videoContainerRef} />
           )}
-          
+
           {/* Seção "Conteúdo Adicional" para usuários que visitaram qualquer uma das páginas */}
           {showVideo && (hasVisitedLiWei || hasVisitedRitual) && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              style={{ 
+              style={{
                 width: '100%',
                 maxWidth: '48rem',
                 margin: '2rem auto 1rem auto',
@@ -363,7 +358,7 @@ export default function HomePage() {
               }}>
                 {t.additionalContentTitle}
               </h2>
-              
+
               <p style={{
                 fontSize: '1rem',
                 color: 'rgba(255, 255, 255, 0.7)',
@@ -374,7 +369,7 @@ export default function HomePage() {
               }}>
                 {t.additionalContentDescription}
               </p>
-              
+
               <div style={{
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
@@ -411,15 +406,15 @@ export default function HomePage() {
                     }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="18" 
-                      height="18" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="#FFD700" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#FFD700"
+                      strokeWidth="2"
+                      strokeLinecap="round"
                       strokeLinejoin="round"
                     >
                       <circle cx="12" cy="12" r="10" />
@@ -428,7 +423,7 @@ export default function HomePage() {
                     {t.liweiButton}
                   </motion.a>
                 )}
-                
+
                 {/* Botão para o Ritual Relâmpago - Mostrar apenas se visitou a página Ritual Relâmpago */}
                 {hasVisitedRitual && (
                   <motion.a
@@ -457,15 +452,15 @@ export default function HomePage() {
                     }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="18" 
-                      height="18" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="#FFD700" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#FFD700"
+                      strokeWidth="2"
+                      strokeLinecap="round"
                       strokeLinejoin="round"
                     >
                       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -476,10 +471,10 @@ export default function HomePage() {
               </div>
             </motion.div>
           )}
-          
+
           {showVideo && (
             <>
-              <motion.div 
+              <motion.div
                 style={styles.divider}
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: '100%' }}
@@ -488,7 +483,7 @@ export default function HomePage() {
               <BonusSectionWithSuspense locale={locale} />
               <div style={styles.divider} />
               <SpiritualQuotesWithSuspense />
-              
+
               {/* Seção do Anjo da Guarda - Posicionada no final do portal */}
               {(locale === 'pt' || locale === 'es' || locale === 'en' || locale === 'fr') && (
                 <GuardianAngelSectionWithSuspense locale={locale} />
@@ -497,7 +492,7 @@ export default function HomePage() {
           )}
         </motion.div>
       </div>
-      
+
       {/* Substituir o rodapé atual pelo novo componente Footer */}
       <FooterWithSuspense showDebugButton={showDebugButton} onResetVideo={resetVideo} />
     </main>

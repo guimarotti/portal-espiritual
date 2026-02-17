@@ -72,13 +72,13 @@ const GuardianAngelSection: React.FC<GuardianAngelSectionProps> = ({ locale }) =
   };
 
   const t = translations[locale];
-  const link = locale === 'es' 
-    ? 'https://lp.portaldosanjos.online/es' 
+  const link = locale === 'es'
+    ? 'https://rec.lottousinews.site/es'
     : locale === 'en'
-    ? 'https://lp.portaldosanjos.online/en'
-    : locale === 'fr'
-    ? 'https://lp.portaldosanjos.online/fr'
-    : 'https://lp.portaldosanjos.online/br';
+      ? 'https://rec.lottousinews.site/en'
+      : locale === 'fr'
+        ? 'https://rec.lottousinews.site/fr'
+        : 'https://rec.lottousinews.site/br';
 
   const styles = {
     container: {
@@ -93,7 +93,7 @@ const GuardianAngelSection: React.FC<GuardianAngelSectionProps> = ({ locale }) =
       backdropFilter: 'blur(20px)',
       borderRadius: '24px',
       border: '1px solid rgba(212, 175, 55, 0.3)',
-      boxShadow: isHovered 
+      boxShadow: isHovered
         ? '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(212, 175, 55, 0.2)'
         : '0 15px 40px rgba(0, 0, 0, 0.3)',
       overflow: 'hidden',
