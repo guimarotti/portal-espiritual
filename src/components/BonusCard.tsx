@@ -193,7 +193,7 @@ const getIcon = (iconType: string) => {
           width: '60px',
           height: '60px',
           borderRadius: '12px',
-          backgroundImage: 'url(https://leitura.tarodosanjos.online/wp-content/uploads/2025/08/IMG_8416-scaled-e1755552533631.jpg)',
+          backgroundImage: 'url(/images/IMG_8416.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

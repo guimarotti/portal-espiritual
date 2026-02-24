@@ -316,20 +316,20 @@ export default function CelestinoPage() {
   useEffect(() => {
     setMounted(true);
     setLocale(getCurrentLocale());
-    
+
     // Detectar se é mobile e ajustar viewport
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
       updateViewportHeight();
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     window.addEventListener('orientationchange', updateViewportHeight);
-    
+
     // Ajustar viewport height para mobile (corrige problema de teclado virtual)
     updateViewportHeight();
-    
+
     // Verificar se o usuário já tem ID salvo, se não, gerar um novo
     let savedUserId = localStorage.getItem(USER_ID_KEY);
     if (!savedUserId) {
@@ -337,7 +337,7 @@ export default function CelestinoPage() {
       localStorage.setItem(USER_ID_KEY, savedUserId);
     }
     setUserId(savedUserId);
-    
+
     // Verificar se o usuário já tem nome salvo
     const savedName = localStorage.getItem(USER_NAME_KEY);
     if (savedName) {
@@ -346,7 +346,7 @@ export default function CelestinoPage() {
     } else {
       setShowNameModal(true);
     }
-    
+
     // Carregar mensagens salvas do localStorage
     try {
       const savedMessages = localStorage.getItem(MESSAGES_KEY);
@@ -362,7 +362,7 @@ export default function CelestinoPage() {
     } catch (error) {
       console.error('Erro ao carregar mensagens do localStorage:', error);
     }
-    
+
     return () => {
       window.removeEventListener('resize', checkMobile);
       window.removeEventListener('orientationchange', updateViewportHeight);
@@ -382,7 +382,7 @@ export default function CelestinoPage() {
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
+      messagesEndRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'end',
         inline: 'nearest'
@@ -406,7 +406,7 @@ export default function CelestinoPage() {
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading || isWaitingResponse) return;
-    
+
     // Bloquear chat imediatamente após envio
     setIsWaitingResponse(true);
 
@@ -428,17 +428,17 @@ export default function CelestinoPage() {
       return newMessages;
     });
     setInputMessage('');
-    
+
     // Delay aleatório entre 5 a 20 segundos antes de mostrar "digitando"
     const randomDelay = Math.floor(Math.random() * (20000 - 5000 + 1)) + 5000;
-    
+
     setTimeout(() => {
       setIsLoading(true);
     }, randomDelay);
 
     // Delay aleatório adicional antes de processar a resposta
     const processingDelay = Math.floor(Math.random() * (20000 - 5000 + 1)) + 5000;
-    
+
     setTimeout(async () => {
       try {
         // Converter código do idioma para nome completo
@@ -470,12 +470,12 @@ export default function CelestinoPage() {
         }
 
         const data: ChatResponse = await response.json();
-        
+
         const responseText = data.message || getErrorMessage();
-        
+
         // Dividir mensagem por quebras de linha se existirem
         const messageParts = responseText.split('\n').filter(part => part.trim() !== '');
-        
+
         // Se há múltiplas partes, criar mensagens separadas
         if (messageParts.length > 1) {
           for (let i = 0; i < messageParts.length; i++) {
@@ -486,14 +486,14 @@ export default function CelestinoPage() {
               const baseDelay = 1000; // 1 segundo base
               const delayPerChar = 30; // 30ms por caractere
               const totalDelay = Math.min(baseDelay + (messageLength * delayPerChar), 20000);
-              
+
               // Delay adicional entre mensagens (2-4 segundos)
               const betweenMessagesDelay = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
               const finalDelay = i === 0 ? totalDelay : totalDelay + betweenMessagesDelay;
-              
+
               // Aguardar o delay antes de mostrar cada parte
               await new Promise(resolve => setTimeout(resolve, finalDelay));
-              
+
               const celestinoMessage: Message = {
                 id: `${Date.now()}_${i}`,
                 text: part,
@@ -519,10 +519,10 @@ export default function CelestinoPage() {
           const baseDelay = 1000; // 1 segundo base
           const delayPerChar = 30; // 30ms por caractere
           const totalDelay = Math.min(baseDelay + (messageLength * delayPerChar), 20000);
-          
+
           // Aguardar o delay antes de mostrar a resposta
           await new Promise(resolve => setTimeout(resolve, totalDelay));
-          
+
           const celestinoMessage: Message = {
             id: (Date.now() + 1).toString(),
             text: responseText,
@@ -543,17 +543,17 @@ export default function CelestinoPage() {
         }
       } catch (error) {
         console.error('Erro ao enviar mensagem:', error);
-        
+
         const errorText = getErrorMessage();
-        
+
         // Calcular delay para mensagem de erro também
         const messageLength = errorText.length;
         const baseDelay = 1000;
         const delayPerChar = 30;
         const totalDelay = Math.min(baseDelay + (messageLength * delayPerChar), 8000);
-        
+
         await new Promise(resolve => setTimeout(resolve, totalDelay));
-        
+
         const errorMessage: Message = {
           id: (Date.now() + 1).toString(),
           text: errorText,
@@ -647,280 +647,280 @@ export default function CelestinoPage() {
   const t = translations[locale];
 
   return (
-      <main style={{
-        ...styles.container,
-        height: isMobile ? viewportHeight : '100vh',
-      }}>
-        {/* Navbar Area */}
-        <div style={styles.navbarArea}>
-          <NavbarWithSuspense />
-        </div>
-        
-        {/* Header Area */}
-        <motion.div
-          style={styles.headerArea}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+    <main style={{
+      ...styles.container,
+      height: isMobile ? viewportHeight : '100vh',
+    }}>
+      {/* Navbar Area */}
+      <div style={styles.navbarArea}>
+        <NavbarWithSuspense />
+      </div>
+
+      {/* Header Area */}
+      <motion.div
+        style={styles.headerArea}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          maxWidth: '100%',
+        }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            maxWidth: '100%',
+            gap: '12px',
           }}>
-            <div style={{
+            <motion.div
+              style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundImage: 'url(/images/IMG_8416.jpg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                border: '2px solid #D4AF37',
+                boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)',
+              }}
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+            >
+            </motion.div>
+            <div>
+              <h1 style={{
+                fontSize: '1.3rem',
+                fontWeight: 'bold',
+                color: '#D4AF37',
+                margin: 0,
+                lineHeight: '1.2',
+              }}>
+                {locale === 'pt' ? 'Celestino' :
+                  locale === 'es' ? 'Celestino' :
+                    locale === 'en' ? 'Celestino' :
+                      'Celestino'}
+              </h1>
+              <p style={{
+                fontSize: '0.8rem',
+                color: 'rgba(255, 255, 255, 0.7)',
+                margin: 0,
+              }}>
+                {locale === 'pt' ? 'Mentor Espiritual' :
+                  locale === 'es' ? 'Mentor Espiritual' :
+                    locale === 'en' ? 'Spiritual Mentor' :
+                      'Mentor Spirituel'}
+              </p>
+            </div>
+          </div>
+
+          {/* Status online */}
+          <motion.div
+            style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-            }}>
-              <motion.div
-                  style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '50%',
-                    backgroundImage: 'url(https://leitura.tarodosanjos.online/wp-content/uploads/2025/08/IMG_8416-scaled-e1755552533631.jpg)',
+              gap: '6px',
+              fontSize: '0.8rem',
+              color: '#4CAF50',
+            }}
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: '#4CAF50',
+              boxShadow: '0 0 8px #4CAF50',
+            }} />
+            {locale === 'pt' ? 'Online' :
+              locale === 'es' ? 'En línea' :
+                locale === 'en' ? 'Online' :
+                  'En ligne'}
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Messages Area */}
+      <motion.div
+        style={{
+          ...styles.messagesArea,
+          padding: isMobile ? '16px' : '20px 40px',
+          maxWidth: isMobile ? '100%' : '800px',
+          margin: '0 auto',
+          width: '100%',
+        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <AnimatePresence>
+          {messages.map((message) => (
+            <motion.div
+              key={message.id}
+              style={{
+                ...styles.message,
+                ...(message.sender === 'user' ? styles.userMessage : styles.celestinoMessage),
+              }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              transition={{
+                duration: 0.4,
+                ease: 'easeOut',
+                delay: message.sender === 'celestino' ? 0.1 : 0
+              }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <div
+                style={{
+                  ...styles.messageAvatar,
+                  ...(message.sender === 'user' ? styles.userAvatar : {
+                    ...styles.celestinoAvatar,
+                    backgroundImage: 'url(/images/IMG_8416.jpg)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    border: '2px solid #D4AF37',
-                    boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)',
-                  }}
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                >
-                </motion.div>
-              <div>
-                <h1 style={{
-                  fontSize: '1.3rem',
-                  fontWeight: 'bold',
-                  color: '#D4AF37',
-                  margin: 0,
-                  lineHeight: '1.2',
-                }}>
-                  {locale === 'pt' ? 'Celestino' :
-                   locale === 'es' ? 'Celestino' :
-                   locale === 'en' ? 'Celestino' :
-                   'Celestino'}
-                </h1>
-                <p style={{
-                  fontSize: '0.8rem',
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  margin: 0,
-                }}>
-                  {locale === 'pt' ? 'Mentor Espiritual' :
-                   locale === 'es' ? 'Mentor Espiritual' :
-                   locale === 'en' ? 'Spiritual Mentor' :
-                   'Mentor Spirituel'}
-                </p>
+                  }),
+                }}
+              >
+                {message.sender === 'user' ? <FaUser /> : null}
               </div>
+              <div
+                style={{
+                  ...styles.messageBubble,
+                  ...(message.sender === 'user' ? styles.userBubble : styles.celestinoBubble),
+                }}
+              >
+                {message.text}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {isLoading && (
+          <motion.div
+            style={{
+              ...styles.message,
+              ...styles.celestinoMessage,
+            }}
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          >
+            <div
+              style={{
+                ...styles.messageAvatar,
+                ...styles.celestinoAvatar,
+                backgroundImage: 'url(/images/IMG_8416.jpg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
             </div>
-            
-            {/* Status online */}
             <motion.div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.8rem',
-                color: '#4CAF50',
+                ...styles.loadingMessage,
+                background: 'linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.15))',
+                backgroundSize: '200% 100%',
+                padding: '12px 16px',
+                borderRadius: '18px',
+                border: '1px solid rgba(212, 175, 55, 0.4)',
               }}
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
             >
+              <span>{t.typing}</span>
               <div style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#4CAF50',
-                boxShadow: '0 0 8px #4CAF50',
-              }} />
-              {locale === 'pt' ? 'Online' :
-               locale === 'es' ? 'En línea' :
-               locale === 'en' ? 'Online' :
-               'En ligne'}
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Messages Area */}
-        <motion.div
-          style={{
-            ...styles.messagesArea,
-            padding: isMobile ? '16px' : '20px 40px',
-            maxWidth: isMobile ? '100%' : '800px',
-            margin: '0 auto',
-            width: '100%',
-          }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-            <AnimatePresence>
-              {messages.map((message) => (
+                ...styles.typingIndicator,
+                marginLeft: '8px',
+              }}>
                 <motion.div
-                  key={message.id}
                   style={{
-                    ...styles.message,
-                    ...(message.sender === 'user' ? styles.userMessage : styles.celestinoMessage),
+                    ...styles.typingDot,
+                    background: '#D4AF37',
                   }}
-                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    ease: 'easeOut',
-                    delay: message.sender === 'celestino' ? 0.1 : 0
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div
-                    style={{
-                      ...styles.messageAvatar,
-                      ...(message.sender === 'user' ? styles.userAvatar : {
-                        ...styles.celestinoAvatar,
-                        backgroundImage: 'url(https://leitura.tarodosanjos.online/wp-content/uploads/2025/08/IMG_8416-scaled-e1755552533631.jpg)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                      }),
-                    }}
-                  >
-                    {message.sender === 'user' ? <FaUser /> : null}
-                  </div>
-                  <div
-                    style={{
-                      ...styles.messageBubble,
-                      ...(message.sender === 'user' ? styles.userBubble : styles.celestinoBubble),
-                    }}
-                  >
-                    {message.text}
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            
-            {isLoading && (
-               <motion.div
-                 style={{
-                   ...styles.message,
-                   ...styles.celestinoMessage,
-                 }}
-                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                 exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                 transition={{ duration: 0.4, ease: 'easeOut' }}
-               >
-                 <div 
-                   style={{
-                     ...styles.messageAvatar,
-                     ...styles.celestinoAvatar,
-                     backgroundImage: 'url(https://leitura.tarodosanjos.online/wp-content/uploads/2025/08/IMG_8416-scaled-e1755552533631.jpg)',
-                     backgroundSize: 'cover',
-                     backgroundPosition: 'center',
-                     backgroundRepeat: 'no-repeat',
-                   }}
-                 >
-                 </div>
-                <motion.div 
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 0.8, repeat: Infinity }}
+                />
+                <motion.div
                   style={{
-                    ...styles.loadingMessage,
-                    background: 'linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.15))',
-                    backgroundSize: '200% 100%',
-                    padding: '12px 16px',
-                    borderRadius: '18px',
-                    border: '1px solid rgba(212, 175, 55, 0.4)',
+                    ...styles.typingDot,
+                    background: '#D4AF37',
                   }}
-                  animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                >
-                  <span>{t.typing}</span>
-                  <div style={{
-                    ...styles.typingIndicator,
-                    marginLeft: '8px',
-                  }}>
-                    <motion.div
-                      style={{
-                        ...styles.typingDot,
-                        background: '#D4AF37',
-                      }}
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 0.8, repeat: Infinity }}
-                    />
-                    <motion.div
-                      style={{
-                        ...styles.typingDot,
-                        background: '#D4AF37',
-                      }}
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
-                    />
-                    <motion.div
-                      style={{
-                        ...styles.typingDot,
-                        background: '#D4AF37',
-                      }}
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
-                    />
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
-            
-            <div 
-               ref={messagesEndRef} 
-               style={{ 
-                 height: '20px',
-                 flexShrink: 0
-               }} 
-             />
-        </motion.div>
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+                />
+                <motion.div
+                  style={{
+                    ...styles.typingDot,
+                    background: '#D4AF37',
+                  }}
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
 
-        {/* Input Area */}
-        <div style={styles.inputArea}>
-          <div style={{
-            ...styles.inputContainer,
-            maxWidth: isMobile ? '100%' : '800px',
-            margin: '0 auto',
-          }}>
-              <textarea
-                style={{
-                  ...styles.input,
-                  borderColor: inputMessage.trim() ? 'rgba(212, 175, 55, 0.8)' : 'rgba(123, 31, 162, 0.6)',
-                  boxShadow: inputMessage.trim() ? '0 4px 20px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.3)',
-                }}
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isWaitingResponse ? (locale === 'pt' ? 'Aguardando resposta...' : locale === 'es' ? 'Esperando respuesta...' : locale === 'en' ? 'Waiting for response...' : 'En attente de réponse...') : t.placeholder}
-                disabled={isLoading || isWaitingResponse}
-                rows={1}
-                onFocus={(e) => {
-                  e.target.style.borderColor = 'rgba(212, 175, 55, 1)';
-                  e.target.style.boxShadow = '0 6px 24px rgba(212, 175, 55, 0.5)';
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = inputMessage.trim() ? 'rgba(212, 175, 55, 0.8)' : 'rgba(123, 31, 162, 0.6)';
-                  e.target.style.boxShadow = inputMessage.trim() ? '0 4px 20px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.3)';
-                  e.target.style.transform = 'translateY(0)';
-                }}
-              />
-              <motion.button
-                style={{
-                  ...styles.sendButton,
-                  ...((!inputMessage.trim() || isLoading || isWaitingResponse) ? styles.sendButtonDisabled : {}),
-                }}
-                onClick={sendMessage}
-                disabled={!inputMessage.trim() || isLoading || isWaitingResponse}
-                whileHover={{ scale: inputMessage.trim() && !isLoading && !isWaitingResponse ? 1.05 : 1 }}
-                whileTap={{ scale: inputMessage.trim() && !isLoading && !isWaitingResponse ? 0.95 : 1 }}
-              >
-                <BsSend />
-              </motion.button>
-            </div>
+        <div
+          ref={messagesEndRef}
+          style={{
+            height: '20px',
+            flexShrink: 0
+          }}
+        />
+      </motion.div>
+
+      {/* Input Area */}
+      <div style={styles.inputArea}>
+        <div style={{
+          ...styles.inputContainer,
+          maxWidth: isMobile ? '100%' : '800px',
+          margin: '0 auto',
+        }}>
+          <textarea
+            style={{
+              ...styles.input,
+              borderColor: inputMessage.trim() ? 'rgba(212, 175, 55, 0.8)' : 'rgba(123, 31, 162, 0.6)',
+              boxShadow: inputMessage.trim() ? '0 4px 20px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.3)',
+            }}
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder={isWaitingResponse ? (locale === 'pt' ? 'Aguardando resposta...' : locale === 'es' ? 'Esperando respuesta...' : locale === 'en' ? 'Waiting for response...' : 'En attente de réponse...') : t.placeholder}
+            disabled={isLoading || isWaitingResponse}
+            rows={1}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'rgba(212, 175, 55, 1)';
+              e.target.style.boxShadow = '0 6px 24px rgba(212, 175, 55, 0.5)';
+              e.target.style.transform = 'translateY(-2px)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = inputMessage.trim() ? 'rgba(212, 175, 55, 0.8)' : 'rgba(123, 31, 162, 0.6)';
+              e.target.style.boxShadow = inputMessage.trim() ? '0 4px 20px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(0, 0, 0, 0.3)';
+              e.target.style.transform = 'translateY(0)';
+            }}
+          />
+          <motion.button
+            style={{
+              ...styles.sendButton,
+              ...((!inputMessage.trim() || isLoading || isWaitingResponse) ? styles.sendButtonDisabled : {}),
+            }}
+            onClick={sendMessage}
+            disabled={!inputMessage.trim() || isLoading || isWaitingResponse}
+            whileHover={{ scale: inputMessage.trim() && !isLoading && !isWaitingResponse ? 1.05 : 1 }}
+            whileTap={{ scale: inputMessage.trim() && !isLoading && !isWaitingResponse ? 0.95 : 1 }}
+          >
+            <BsSend />
+          </motion.button>
         </div>
+      </div>
 
 
 
